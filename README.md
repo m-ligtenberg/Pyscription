@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Code Quality](https://img.shields.io/badge/code%20quality-A-green.svg)](https://github.com/your-username/pyscription)
+[![Code Quality](https://img.shields.io/badge/code%20quality-A-green.svg)](https://github.com/m-ligtenberg/pyscription)
 
 > 🎯 **Production Ready** • 🛡️ **Security First** • 🤖 **AI-Powered** • 📱 **Beautiful UI** • 🔒 **100% Local**
 
@@ -146,7 +146,7 @@ Let Pyscription analyze and improve your codebase autonomously:
 
 ## 🛡️ **Security Analysis**
 
-Pyscription includes enterprise-grade security analysis:
+Pyscription includes security analysis:
 
 ```python
 # Example: Detecting security vulnerabilities
@@ -192,7 +192,7 @@ pyscription/
 
 ---
 
-## 🎨 **Beautiful Terminal UI**
+## 🎨 **Terminal UI**
 
 Pyscription features a stunning terminal interface:
 
@@ -262,25 +262,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 **Acknowledgments**
 
-- **Ollama Team** for excellent local LLM infrastructure
+- **Ollama Team** for local LLM infrastructure
 - **Python Community** for comprehensive documentation
-- **Claude AI** for development assistance
-- **Open Source Contributors** worldwide
 
 ---
 
 ## 📞 **Support**
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-username/pyscription/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/pyscription/discussions)  
-- 📚 **Documentation**: [Wiki](https://github.com/your-username/pyscription/wiki)
-- ⭐ **Feature Requests**: [GitHub Issues](https://github.com/your-username/pyscription/issues/new)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/m-ligtenberg/pyscription/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/m-ligtenberg/pyscription/discussions)  
+- 📚 **Documentation**: [Wiki](https://github.com/m-ligtenberg/pyscription/wiki)
+- ⭐ **Feature Requests**: [GitHub Issues](https://github.com/m-ligtenberg/pyscription/issues/new)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for the Python community**
+**Made with ❤️ by M. Ligtenberg**
 
 [⭐ Star this repo](https://github.com/your-username/pyscription) • [🍴 Fork it](https://github.com/your-username/pyscription/fork) • [📝 Contribute](CONTRIBUTING.md)
 
