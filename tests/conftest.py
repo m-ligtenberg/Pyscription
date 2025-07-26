@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from typing import Generator
 
-from pyscription.core.mentor import MLEnhancedPyscription
+from pyscription.core.doctor_interactive import MLEnhancedPyscription
 from pyscription.core.security_analyzer import SecurityPatternAnalyzer
 
 

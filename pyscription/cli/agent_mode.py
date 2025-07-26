@@ -13,8 +13,8 @@ from datetime import datetime
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from pyscription.core.autonomous_agent import AutonomousPythonAgent, TaskStatus, TaskPriority
-from pyscription.core.mentor import MLEnhancedPyscription
+from pyscription.core.autonomous_surgeon import AutonomousPythonAgent, TaskStatus, TaskPriority
+from pyscription.core.doctor_interactive import MLEnhancedPyscription
 from pyscription.utils.terminal_styling import ui, Colors
 
 
@@ -28,6 +28,16 @@ class AgentCLI:
         
     def run_interactive_agent(self):
         """Run interactive agent mode"""
+        # Show splash screen first
+        ui.print_splash_screen()
+        
+        # Brief pause for effect
+        import time
+        time.sleep(1.5)
+        
+        # Clear and show normal interface
+        ui.clear_screen()
+        
         # Beautiful header
         ui.print_header("Pyscription - Autonomous Agent Mode", 
                        "Self-Directed Python Development AI")
@@ -88,7 +98,9 @@ class AgentCLI:
                 break
             except Exception as e:
                 ui.print_error(f"Error: {e}")
-    
+        # Restore terminal state after agent session
+        ui.restore_terminal()
+
     def _handle_agent_command(self, command: str):
         """Handle agent commands"""
         parts = command.split()

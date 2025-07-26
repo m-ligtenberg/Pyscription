@@ -87,12 +87,15 @@ class LocalAIInterface:
     """Main interface for local AI interactions"""
     
     def __init__(self, backend: LocalAIBackend = None):
-        # Try Ollama by default, with popular coding models
+        # Try Ollama by default, with Python-optimized models first
         self.preferred_models = [
-            "codellama:7b-instruct",
-            "deepseek-coder:6.7b", 
-            "phi3:3.8b",
-            "llama3.2:3b"
+            "codellama:7b-python",      # Python-specific CodeLlama
+            "codellama:13b-python",     # Larger Python-specific model
+            "codellama:7b-instruct",    # General CodeLlama instruct
+            "codellama:13b-instruct",   # Larger general CodeLlama
+            "deepseek-coder:6.7b",      # Alternative coding model
+            "phi3:3.8b",                # Lightweight option
+            "llama3.2:3b"               # Fallback option
         ]
         
         self.backend = backend or self._init_default_backend()
@@ -118,8 +121,36 @@ class LocalAIInterface:
         return OllamaBackend()  # Will return error messages
     
     def _build_system_context(self) -> str:
-        """Build system context for the AI"""
-        return """You are Pyscription, a local AI assistant specialized in Python development.
+        """Build system context optimized for Python-specific models"""
+        current_model = getattr(self.backend, 'model', 'unknown')
+        
+        if 'python' in current_model.lower():
+            # Enhanced context for Python-specific models
+            return """You are Pyscription 💊, a specialized Python development assistant using CodeLlama-Python.
+
+Your medical metaphor: You're a Python doctor diagnosing code issues and prescribing fixes.
+
+Core Python specializations:
+- Deep Python syntax and semantic analysis
+- Pythonic code patterns and idioms
+- Standard library expertise and best practices
+- Performance optimization and memory management
+- Modern Python features (f-strings, type hints, dataclasses, etc.)
+- Framework-specific guidance (Django, FastAPI, Flask, etc.)
+- Testing strategies (pytest, unittest, mocking)
+- Package management and virtual environments
+
+Diagnostic approach:
+- Analyze code for bugs, security issues, and performance problems
+- Suggest Pythonic refactoring and improvements
+- Provide working, tested code examples
+- Explain the 'why' behind recommendations
+- Focus on readability, maintainability, and performance
+
+Treatment style: Concise, practical, with executable code examples."""
+        else:
+            # General context for other models
+            return """You are Pyscription, a local AI assistant specialized in Python development.
 
 Key capabilities:
 - Analyze Python code and suggest improvements

@@ -10,7 +10,7 @@ from typing import Optional
 
 
 class Colors:
-    """ANSI color codes for terminal styling"""
+    """ANSI color codes for terminal styling - Calm color palette"""
     
     # Reset
     RESET = '\033[0m'
@@ -19,28 +19,35 @@ class Colors:
     ITALIC = '\033[3m'
     UNDERLINE = '\033[4m'
     
-    # Background colors
-    BG_LIGHT_BLUE = '\033[48;5;153m'    # Light blue background
-    BG_DARK_BLUE = '\033[48;5;18m'      # Dark blue background
-    BG_WHITE = '\033[48;5;231m'         # White background
-    BG_GRAY = '\033[48;5;240m'          # Gray background
-    BG_GREEN = '\033[48;5;46m'          # Green background
-    BG_RED = '\033[48;5;196m'           # Red background
-    BG_YELLOW = '\033[48;5;226m'        # Yellow background
+    # Background colors - Calm and subtle
+    BG_CONTAINER = '\033[48;5;236m'     # Dark gray container background
+    BG_CONTENT = '\033[48;5;234m'       # Slightly darker content area
+    BG_HEADER = '\033[48;5;238m'        # Header background
+    BG_INPUT = '\033[48;5;235m'         # Input area background
+    BG_SUCCESS = '\033[48;5;22m'        # Muted green
+    BG_ERROR = '\033[48;5;52m'          # Muted red
+    BG_WARNING = '\033[48;5;58m'        # Muted yellow/brown
+    BG_INFO = '\033[48;5;24m'           # Muted blue
     
-    # Foreground colors - Modern syntax highlighting
+    # Foreground colors - Calm and readable
     BLACK = '\033[38;5;16m'             # Pure black
     WHITE = '\033[38;5;231m'            # Pure white
-    DARK_BLUE = '\033[38;5;18m'         # Dark blue for main text
-    BRIGHT_BLUE = '\033[38;5;39m'       # Keywords, commands
-    CYAN = '\033[38;5;51m'              # Function names, identifiers
-    GREEN = '\033[38;5;46m'             # Strings, success messages
-    ORANGE = '\033[38;5;208m'           # Numbers, constants
-    PURPLE = '\033[38;5;165m'           # Classes, types
-    RED = '\033[38;5;196m'              # Errors, warnings
-    YELLOW = '\033[38;5;226m'           # Comments, notes
-    GRAY = '\033[38;5;240m'             # Dimmed text
-    PINK = '\033[38;5;213m'             # Special highlighting
+    LIGHT_GRAY = '\033[38;5;250m'       # Light gray for main text
+    GRAY = '\033[38;5;244m'             # Medium gray for secondary text
+    DARK_GRAY = '\033[38;5;240m'        # Dark gray for dimmed text
+    
+    # Calm accent colors
+    SOFT_BLUE = '\033[38;5;74m'         # Soft blue for keywords
+    SOFT_CYAN = '\033[38;5;80m'         # Soft cyan for functions
+    SOFT_GREEN = '\033[38;5;72m'        # Soft green for strings
+    SOFT_ORANGE = '\033[38;5;179m'      # Soft orange for numbers
+    SOFT_PURPLE = '\033[38;5;140m'      # Soft purple for types
+    SOFT_RED = '\033[38;5;167m'         # Soft red for errors
+    SOFT_YELLOW = '\033[38;5;186m'      # Soft yellow for warnings
+    
+    # Container border colors
+    BORDER_LIGHT = '\033[38;5;245m'     # Light border
+    BORDER_DARK = '\033[38;5;239m'      # Dark border
     
     # Gradient colors for fancy effects
     GRADIENT_BLUE = [
@@ -61,61 +68,78 @@ class TerminalUI:
         self.setup_terminal()
     
     def setup_terminal(self):
-        """Setup terminal for optimal display"""
-        # Clear screen and set light blue background
+        """Setup terminal for containerized display"""
+        # Clear screen
         print('\033[2J', end='')  # Clear screen
         print('\033[H', end='')   # Move cursor to top
         
-        # Set light blue background for entire terminal
-        if os.name != 'nt':  # Unix-like systems
-            print(f'{Colors.BG_LIGHT_BLUE}{Colors.DARK_BLUE}', end='')
+        # Initialize container UI
+        self.print_container_frame()
     
     def _get_terminal_width(self) -> int:
-        """Get terminal width, default to 80"""
+        """Get terminal width with responsive design"""
         try:
-            return os.get_terminal_size().columns
+            width = os.get_terminal_size().columns
+            # Responsive width constraints
+            if width < 60:
+                return 60  # Minimum readable width
+            elif width > 120:
+                return 120  # Maximum for readability
+            else:
+                return width
         except:
-            return 80
+            return 80  # Safe default
     
     def print_header(self, title: str, subtitle: str = ""):
-        """Print a beautiful header with gradient effect"""
+        """Print a calm containerized header"""
         self.clear_screen()
+        self.print_container_frame()
         
-        # Top border with gradient
-        border = "█" * self.width
-        print(f"{Colors.BG_DARK_BLUE}{Colors.BRIGHT_BLUE}{border}{Colors.RESET}")
+        # Container width (leave margin for borders)
+        container_width = self.width - 4
         
-        # Title with emoji and styling
-        title_line = f"🤖 {title}"
-        padding = (self.width - len(title_line)) // 2
-        print(f"{Colors.BG_LIGHT_BLUE}{Colors.DARK_BLUE}" + " " * padding + 
-              f"{Colors.BOLD}{Colors.BRIGHT_BLUE}{title_line}" + 
-              " " * (self.width - len(title_line) - padding) + f"{Colors.RESET}")
+        # Header section
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_HEADER}{Colors.WHITE}" + 
+              f" 💊 {title}".ljust(container_width) + 
+              f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
         
         if subtitle:
-            subtitle_line = f"✨ {subtitle}"
-            padding = (self.width - len(subtitle_line)) // 2
-            print(f"{Colors.BG_LIGHT_BLUE}{Colors.PURPLE}" + " " * padding + 
-                  subtitle_line + " " * (self.width - len(subtitle_line) - padding) + 
-                  f"{Colors.RESET}")
+            print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.GRAY}" + 
+                  f" {subtitle}".ljust(container_width) + 
+                  f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
         
-        # Bottom border
-        print(f"{Colors.BG_DARK_BLUE}{Colors.BRIGHT_BLUE}{border}{Colors.RESET}")
+        # Separator
+        print(f"{Colors.BORDER_LIGHT}├{'─' * container_width}┤{Colors.RESET}")
         print()
     
     def print_section(self, title: str, emoji: str = "📋"):
-        """Print a section header"""
-        print(f"{Colors.BG_WHITE}{Colors.DARK_BLUE} {emoji} {Colors.BOLD}{title} {Colors.RESET}")
-        print(f"{Colors.BG_LIGHT_BLUE}{Colors.GRAY}{'─' * (len(title) + 4)}{Colors.RESET}")
+        """Print a calm section header within container"""
+        container_width = self.width - 4
+        section_line = f" {emoji} {title}"
+        
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.SOFT_BLUE}" + 
+              f"{section_line}".ljust(container_width) + 
+              f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+        
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.DARK_GRAY}" + 
+              f"{'─' * (len(section_line) - 1)}".ljust(container_width) + 
+              f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
     
     def print_command_help(self, commands: list):
-        """Print command help in a beautiful format"""
+        """Print command help in containerized format"""
         self.print_section("Available Commands", "⚡")
         
+        container_width = self.width - 4
         for cmd, desc in commands:
-            print(f"{Colors.BG_LIGHT_BLUE}  {Colors.BRIGHT_BLUE}{Colors.BOLD}{cmd:<20}{Colors.RESET}" +
-                  f"{Colors.BG_LIGHT_BLUE}{Colors.DARK_BLUE} - {desc}{Colors.RESET}")
-        print()
+            cmd_line = f"  {cmd:<20} - {desc}"
+            if len(cmd_line) > container_width:
+                cmd_line = cmd_line[:container_width-3] + "..."
+            
+            print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.SOFT_CYAN}" + 
+                  f"{cmd:<20}{Colors.LIGHT_GRAY} - {desc}".ljust(container_width) + 
+                  f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+        
+        self.print_container_separator()
     
     def print_status_box(self, title: str, items: list, status_type: str = "info"):
         """Print a status box with colored indicators"""
@@ -226,6 +250,33 @@ class TerminalUI:
         print(f"{Colors.BG_WHITE}{Colors.BLACK}└{'─' * (self.width - 2)}┘{Colors.RESET}")
         print()
     
+    def print_code_block_container(self, code: str, language: str = "python"):
+        """Print syntax-highlighted code block within container"""
+        container_width = self.width - 4
+        
+        # Code header
+        header = f" {language.upper()} "
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_HEADER}{Colors.WHITE}" + 
+              f"{header}".ljust(container_width) + 
+              f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+        
+        # Code content with line numbers
+        lines = code.split('\n')
+        for i, line in enumerate(lines, 1):
+            line_num = f"{i:3d}"
+            highlighted_line = self._highlight_python_syntax_container(line)
+            code_line = f"{line_num}│ {highlighted_line}"
+            
+            # Truncate if too long
+            if len(code_line) > container_width - 4:
+                code_line = code_line[:container_width-7] + "..."
+            
+            print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.DARK_GRAY}" + 
+                  f"{code_line}".ljust(container_width) + 
+                  f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+        
+        self.print_container_separator()
+    
     def _highlight_python_syntax(self, line: str) -> str:
         """Apply syntax highlighting to Python code"""
         if not line.strip():
@@ -262,6 +313,43 @@ class TerminalUI:
         highlighted = re.sub(r'\bclass\s+(\w+)', f'{Colors.BRIGHT_BLUE}class{Colors.BLACK} {Colors.PURPLE}\\1{Colors.BLACK}', highlighted)
         
         return f"{Colors.BLACK}{highlighted}{Colors.RESET}"
+    
+    def _highlight_python_syntax_container(self, line: str) -> str:
+        """Apply calm syntax highlighting for containerized code"""
+        if not line.strip():
+            return line
+        
+        # Keywords
+        keywords = ['def', 'class', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 
+                   'finally', 'with', 'import', 'from', 'return', 'yield', 'break', 'continue',
+                   'pass', 'raise', 'assert', 'del', 'global', 'nonlocal', 'lambda', 'and', 
+                   'or', 'not', 'in', 'is', 'True', 'False', 'None']
+        
+        highlighted = line
+        
+        # Highlight keywords with soft colors
+        for keyword in keywords:
+            highlighted = highlighted.replace(f' {keyword} ', f' {Colors.SOFT_BLUE}{keyword}{Colors.LIGHT_GRAY} ')
+            if highlighted.startswith(f'{keyword} '):
+                highlighted = f'{Colors.SOFT_BLUE}{keyword}{Colors.LIGHT_GRAY}' + highlighted[len(keyword):]
+        
+        # Highlight strings with soft green
+        highlighted = highlighted.replace('"', f'{Colors.SOFT_GREEN}"{Colors.LIGHT_GRAY}')
+        highlighted = highlighted.replace("'", f'{Colors.SOFT_GREEN}\'{Colors.LIGHT_GRAY}')
+        
+        # Highlight comments with soft gray
+        if '#' in highlighted:
+            comment_start = highlighted.find('#')
+            if comment_start != -1:
+                highlighted = (highlighted[:comment_start] + 
+                             f'{Colors.DARK_GRAY}{highlighted[comment_start:]}{Colors.LIGHT_GRAY}')
+        
+        # Highlight function and class names
+        import re
+        highlighted = re.sub(r'\bdef\s+(\w+)', f'{Colors.SOFT_BLUE}def{Colors.LIGHT_GRAY} {Colors.SOFT_CYAN}\\1{Colors.LIGHT_GRAY}', highlighted)
+        highlighted = re.sub(r'\bclass\s+(\w+)', f'{Colors.SOFT_BLUE}class{Colors.LIGHT_GRAY} {Colors.SOFT_PURPLE}\\1{Colors.LIGHT_GRAY}', highlighted)
+        
+        return f"{Colors.LIGHT_GRAY}{highlighted}{Colors.RESET}"
     
     def print_task_list(self, tasks: list, show_details: bool = False):
         """Print a beautiful task list"""
@@ -337,53 +425,322 @@ class TerminalUI:
         print()
     
     def input_prompt(self, prompt: str, prompt_type: str = "normal") -> str:
-        """Styled input prompt"""
+        """Fixed position input prompt at bottom of container"""
         if prompt_type == "agent":
             emoji = "🤖"
-            color = Colors.BRIGHT_BLUE
+            color = Colors.SOFT_BLUE
         elif prompt_type == "error":
             emoji = "❌"
-            color = Colors.RED
+            color = Colors.SOFT_RED
         elif prompt_type == "success":
             emoji = "✅"
-            color = Colors.GREEN
+            color = Colors.SOFT_GREEN
         else:
             emoji = "💬"
-            color = Colors.CYAN
+            color = Colors.SOFT_CYAN
+        
+        terminal_height = self.get_terminal_height()
+        container_width = self.width - 2
+        input_row = terminal_height - 2
+        
+        # Print input line at fixed position
+        input_line = f" {emoji} {prompt}: "
+        spaces_needed = container_width - len(input_line) - 1
+        print(f"\033[{input_row};1H{Colors.BORDER_LIGHT}│ {color}{input_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
         
         try:
-            return input(f"{Colors.BG_LIGHT_BLUE}{color} {emoji} {prompt} {Colors.RESET}")
+            # Position cursor for input
+            print(f"\033[{input_row};{len(input_line) + 2}H", end="")
+            print('\033[?25h', end='')  # Show cursor
+            user_input = input()
+            print('\033[?25l', end='')  # Hide cursor again
+            
+            # Clear input line and show what was entered
+            display_line = f" > {user_input}"
+            spaces_needed = container_width - len(display_line) - 1
+            print(f"\033[{input_row};1H{Colors.BORDER_LIGHT}│ {Colors.LIGHT_GRAY}{display_line}{Colors.RESET}" + 
+                  " " * spaces_needed + 
+                  f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+            return user_input
         except (KeyboardInterrupt, EOFError):
-            print(f"\n{Colors.BG_LIGHT_BLUE}{Colors.GRAY}Goodbye! 👋{Colors.RESET}")
+            goodbye_line = " Goodbye! 👋"
+            spaces_needed = container_width - len(goodbye_line) - 1
+            print(f"\033[{input_row};1H{Colors.BORDER_LIGHT}│ {Colors.GRAY}{goodbye_line}{Colors.RESET}" + 
+                  " " * spaces_needed + 
+                  f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+            print('\033[?25h', end='')  # Show cursor before exit
             sys.exit(0)
     
     def clear_screen(self):
-        """Clear screen while maintaining background"""
+        """Clear screen for containerized display"""
         print('\033[2J', end='')  # Clear screen
         print('\033[H', end='')   # Move cursor to top
-        print(f'{Colors.BG_LIGHT_BLUE}{Colors.DARK_BLUE}', end='')
     
     def print_success(self, message: str):
-        """Print success message"""
-        print(f"{Colors.BG_GREEN}{Colors.BLACK} ✅ {message} {Colors.RESET}")
+        """Print medical-themed success message in container"""
+        container_width = self.width - 4
+        msg_line = f" ✅ RECOVERY: {message}"
+        spaces_needed = container_width - len(msg_line)
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.SOFT_GREEN}{msg_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
     
     def print_error(self, message: str):
-        """Print error message"""
-        print(f"{Colors.BG_RED}{Colors.WHITE} ❌ {message} {Colors.RESET}")
+        """Print medical-themed error message in container"""
+        container_width = self.width - 4
+        msg_line = f" 🩺 DIAGNOSIS: {message}"
+        spaces_needed = container_width - len(msg_line)
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.SOFT_RED}{msg_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
     
     def print_warning(self, message: str):
-        """Print warning message"""
-        print(f"{Colors.BG_YELLOW}{Colors.BLACK} ⚠️  {message} {Colors.RESET}")
+        """Print medical-themed warning message in container"""
+        container_width = self.width - 4
+        msg_line = f" ⚠️ SYMPTOM: {message}"
+        spaces_needed = container_width - len(msg_line)
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.SOFT_YELLOW}{msg_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
     
     def print_info(self, message: str):
-        """Print info message"""
-        print(f"{Colors.BG_LIGHT_BLUE}{Colors.DARK_BLUE} ℹ️  {message} {Colors.RESET}")
+        """Print medical-themed info message in container"""
+        container_width = self.width - 4
+        msg_line = f" 💊 TREATMENT: {message}"
+        spaces_needed = container_width - len(msg_line)
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.SOFT_BLUE}{msg_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+    
+    
+    def print_critical(self, message: str):
+        """Print critical medical emergency message"""
+        container_width = self.width - 4
+        msg_line = f" 🚨 EMERGENCY: {message}"
+        # Flash effect for critical messages
+        for _ in range(3):
+            print(f"\033[7m{Colors.BORDER_LIGHT}│ {Colors.BG_ERROR}{Colors.WHITE}" + 
+                  f"{msg_line}".ljust(container_width) + 
+                  f"{Colors.RESET}\033[7m{Colors.BORDER_LIGHT} │{Colors.RESET}")
+            time.sleep(0.2)
+            print(f"\033[A\033[K", end='')  # Move up and clear line
+            time.sleep(0.1)
+        # Final display
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_ERROR}{Colors.WHITE}" + 
+              f"{msg_line}".ljust(container_width) + 
+              f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+    
+    def print_diagnosis(self, title: str, symptoms: list, treatment: str = None):
+        """Print a complete medical diagnosis with symptoms and treatment"""
+        container_width = self.width - 4
+        
+        # Diagnosis header
+        header_line = f" 🏥 MEDICAL DIAGNOSIS: {title}"
+        print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_HEADER}{Colors.WHITE}" + 
+              f"{header_line}".ljust(container_width) + 
+              f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+        
+        # Symptoms
+        if symptoms:
+            print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.SOFT_RED}" + 
+                  f" 🔍 SYMPTOMS DETECTED:".ljust(container_width) + 
+                  f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+            
+            for symptom in symptoms[:5]:  # Limit to 5 symptoms
+                symptom_line = f"   • {symptom}"
+                if len(symptom_line) > container_width - 2:
+                    symptom_line = symptom_line[:container_width-5] + "..."
+                print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.LIGHT_GRAY}" + 
+                      f"{symptom_line}".ljust(container_width) + 
+                      f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+        
+        # Treatment recommendation
+        if treatment:
+            print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.SOFT_GREEN}" + 
+                  f" 💊 PRESCRIBED TREATMENT:".ljust(container_width) + 
+                  f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+            
+            treatment_line = f"   {treatment}"
+            if len(treatment_line) > container_width - 2:
+                treatment_line = treatment_line[:container_width-5] + "..."
+            print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{Colors.LIGHT_GRAY}" + 
+                  f"{treatment_line}".ljust(container_width) + 
+                  f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+    
+    def print_splash_screen(self):
+        """Display the main splash screen"""
+        self.clear_screen()
+        
+        # ASCII Art Header
+        print(f"{Colors.SOFT_CYAN}")
+        print("    ____                      _       _   _             ")
+        print("   |  _ \ _   _ ___  ___ _ __(_)_ __ | |_(_) ___  _ __  ")
+        print("   | |_) | | | / __|/ __| '__| | '_ \| __| |/ _ \| '_ \ ")
+        print("   |  __/| |_| \__ \ (__| |  | | |_) | |_| | (_) | | | |")
+        print("   |_|    \__, |___/\___|_|  |_| .__/ \__|_|\___/|_| |_|")
+        print("          |___/                |_|                      ")
+        print(f"{Colors.RESET}")
+        print()
+        
+        # Version and tagline
+        print(f"{Colors.SOFT_YELLOW}           💊 Terminal medication. No prescription needed.{Colors.RESET}")
+        print()
+        print(f"{Colors.SOFT_GREEN}    🏥 AI-Enhanced Python Development Assistant{Colors.RESET}")
+        print(f"{Colors.LIGHT_GRAY}    🔬 Diagnose • 💉 Inject • 💊 Medicate • 🧬 Evolve{Colors.RESET}")
+        print()
+    
+    def print_sticky_container_header(self, title: str, current_dir: str):
+        """Print a sticky header with title and current directory"""
+        import os
+        
+        # Clear screen and position cursor at top
+        print('\033[2J\033[H', end='')
+        
+        container_width = self.width - 4
+        
+        # Top border
+        print(f"{Colors.BORDER_LIGHT}┌{'─' * (self.width - 2)}┐{Colors.RESET}")
+        
+        # Title line
+        title_line = f" 💊 {title}"
+        spaces_needed = container_width - len(title_line)
+        print(f"{Colors.BORDER_LIGHT}│{Colors.SOFT_CYAN}{title_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+        
+        # Directory line
+        dir_display = os.path.basename(current_dir) or current_dir
+        if len(dir_display) > container_width - 10:
+            dir_display = "..." + dir_display[-(container_width-13):]
+        dir_line = f" 📁 {dir_display}"
+        spaces_needed = container_width - len(dir_line)
+        print(f"{Colors.BORDER_LIGHT}│{Colors.GRAY}{dir_line}{Colors.RESET}" + 
+              " " * spaces_needed + 
+              f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+        
+        # Separator line
+        print(f"{Colors.BORDER_LIGHT}├{'─' * (self.width - 2)}┤{Colors.RESET}")
+        
+        # Store current position for scrollable content
+        self.content_start_row = 5  # Header takes 4 rows + separator
+    
+    def print_scrollable_content_line(self, content: str, color: str = None):
+        """Print a single line of scrollable content inside the container"""
+        container_width = self.width - 4
+        text_color = color or Colors.LIGHT_GRAY
+        
+        # Wrap long content
+        if len(content) > container_width:
+            wrapped_lines = self.wrap_text(content, container_width)
+            for line in wrapped_lines:
+                # Calculate actual visual length (excluding ANSI codes)
+                visual_length = len(line)
+                spaces_needed = container_width - visual_length
+                print(f"{Colors.BORDER_LIGHT}│ {text_color}{line}{Colors.RESET}" + 
+                      " " * spaces_needed + 
+                      f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+        else:
+            # Calculate actual visual length (excluding ANSI codes)
+            visual_length = len(content)
+            spaces_needed = container_width - visual_length
+            print(f"{Colors.BORDER_LIGHT}│ {text_color}{content}{Colors.RESET}" + 
+                  " " * spaces_needed + 
+                  f"{Colors.BORDER_LIGHT}│{Colors.RESET}")
+    
+    def print_sticky_container_footer(self):
+        """Print the bottom border of the sticky container"""
+        print(f"{Colors.BORDER_LIGHT}└{'─' * (self.width - 2)}┘{Colors.RESET}")
+    
+    def get_terminal_height(self) -> int:
+        """Get terminal height for scrollable content calculation"""
+        try:
+            return os.get_terminal_size().lines
+        except:
+            return 24  # Safe default
+    
+    def get_scrollable_content_height(self) -> int:
+        """Calculate available height for scrollable content"""
+        total_height = self.get_terminal_height()
+        header_height = 4  # Title, dir, separator lines
+        footer_height = 1  # Bottom border
+        input_height = 2   # Input prompt space
+        
+        return max(5, total_height - header_height - footer_height - input_height)
     
     def restore_terminal(self):
         """Restore terminal to default state"""
+        print('\033[?25h', end='')  # Show cursor
         print(Colors.RESET, end='')
         if os.name != 'nt':
             print('\033[2J\033[H', end='')  # Clear and reset
+
+
+    def print_container_frame(self):
+        """Print the container frame top"""
+        print(f"{Colors.BORDER_LIGHT}┌{'─' * (self.width - 2)}┐{Colors.RESET}")
+    
+    def print_container_bottom(self):
+        """Print the container frame bottom"""
+        print(f"{Colors.BORDER_LIGHT}└{'─' * (self.width - 2)}┘{Colors.RESET}")
+    
+    def print_container_separator(self):
+        """Print a separator line within container"""
+        print(f"{Colors.BORDER_LIGHT}│{' ' * (self.width - 2)}│{Colors.RESET}")
+    
+    def update_terminal_size(self):
+        """Update terminal width for responsive design"""
+        self.width = self._get_terminal_width()
+    
+    def wrap_text(self, text: str, max_width: int) -> list:
+        """Intelligently wrap text for better readability"""
+        words = text.split()
+        lines = []
+        current_line = ""
+        
+        for word in words:
+            # Check if adding this word would exceed the width
+            test_line = current_line + (" " if current_line else "") + word
+            if len(test_line) <= max_width:
+                current_line = test_line
+            else:
+                if current_line:
+                    lines.append(current_line)
+                # If single word is too long, truncate it
+                if len(word) > max_width:
+                    lines.append(word[:max_width-3] + "...")
+                    current_line = ""
+                else:
+                    current_line = word
+        
+        if current_line:
+            lines.append(current_line)
+        
+        return lines if lines else [""]
+    
+    def print_container_content(self, content: str, color: str = None):
+        """Print content within the container borders with intelligent wrapping"""
+        # Update terminal size for responsive design
+        self.update_terminal_size()
+        container_width = self.width - 4
+        lines = content.split('\n')
+        
+        text_color = color or Colors.LIGHT_GRAY
+        
+        for line in lines:
+            # Use intelligent wrapping for long lines
+            if len(line) > container_width:
+                wrapped_lines = self.wrap_text(line, container_width)
+                for wrapped_line in wrapped_lines:
+                    print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{text_color}" + 
+                          f"{wrapped_line}".ljust(container_width) + 
+                          f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
+            else:
+                # Print lines that fit normally
+                print(f"{Colors.BORDER_LIGHT}│ {Colors.BG_CONTENT}{text_color}" + 
+                      f"{line}".ljust(container_width) + 
+                      f"{Colors.RESET}{Colors.BORDER_LIGHT} │{Colors.RESET}")
 
 
 # Global UI instance
